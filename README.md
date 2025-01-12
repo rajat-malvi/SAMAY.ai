@@ -53,7 +53,7 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
 
 5. **Run the Application**:
    ```bash
-   streamlit run testing.py
+   streamlit run app.py
    ```
 
 ---
