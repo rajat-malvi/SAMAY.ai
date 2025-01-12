@@ -1,0 +1,11 @@
+GOOGLE_API_KEY=AIzaSyB8selK8x6nokSBz7O4b-jYBaKnVfdJY8M
+GROQ_API_KEY=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
+
+
+# -> qa_core.py -> dat_proccecing 
+
+# chating_bot -> data_proccecing  -> work
+
+# app_alpha -> using chating_bot.py
+
+#  app_beta - final
