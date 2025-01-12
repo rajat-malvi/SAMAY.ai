@@ -68,9 +68,10 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
 ---
 
 ## Contributing
-Contributions are welcome! Please submit pull requests or report issues via GitHub.
 
+- **Rajat Malviya**: [GitHub Profile](https://github.com/rajat-malvi)
+- **Raushan Kumar**: [GitHub Profile](https://github.com/raushan22882917)
+- 
+Contributions are welcome! Please feel free to submit pull requests or report issues via GitHub.
 ---
 
-## License
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
