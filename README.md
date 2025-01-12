@@ -71,7 +71,7 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
 
 - **Rajat Malviya**: [GitHub Profile](https://github.com/rajat-malvi)
 - **Raushan Kumar**: [GitHub Profile](https://github.com/raushan22882917)
-- 
-Contributions are welcome! Please feel free to submit pull requests or report issues via GitHub.
+ 
+// Contributions are welcome! Please feel free to submit pull requests or report issues via GitHub.
 ---
 
