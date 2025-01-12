@@ -46,6 +46,7 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
    - Create a `.env` file in the project directory with the following:
      ```env
      GOOGLE_API_KEY=your_google_api_key_here
+     GROQ_API_KEY=your_groq_api_key_here
      ```
 
 4. **Prepare the FAISS Index**:
