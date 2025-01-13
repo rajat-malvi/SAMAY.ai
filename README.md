@@ -33,7 +33,7 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
 ## Setup Instructions
 1. **Clone the Repository**:
    ```bash
-   git clone <https://github.com/rajat-malvi/SAMAY.ai.git>
+   git clone https://github.com/rajat-malvi/SAMAY.ai.git
    cd SAMAY.ai
    ```
 
