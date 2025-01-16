@@ -286,7 +286,7 @@ except Exception as e:
 def chat():
     try:
         data = request.get_json()
-        print(data)
+        # print(data)
         
         if not data or 'query' not in data:
             return jsonify({"error": "Missing query in request body"}), 400
