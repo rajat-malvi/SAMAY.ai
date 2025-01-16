@@ -16,8 +16,12 @@ from typing import List, Dict
 import re
 import json
 from datetime import datetime
+from flask_cors import CORS
+
+
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"], "allow_headers": "*"}})
 
 # Load environment variables
 load_dotenv()
@@ -341,4 +345,4 @@ def health_check():
     return jsonify({"status": "healthy", "qa_system": "initialized" if qa_system else "not initialized"})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
