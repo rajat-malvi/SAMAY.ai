@@ -67,9 +67,50 @@ The **SAMAY.ai** project is an AI-powered application designed to answer questio
 
 ---
 
+## API Integration
+The SAMAY.ai project also provides a REST API hosted at `https://samay-ai-twgu.onrender.com` with the following endpoints:
+
+### Endpoints
+1. **`/chat`**
+   - **Method**: POST
+   - **Description**: Accepts a query related to the Bhagavad Gita and returns a context-aware response.
+   - **Request Body** (JSON):
+     ```json
+     {
+       "query": "what is purpose of yoga?"
+     }
+     ```
+   - **Response** (JSON):
+     ```json
+     {
+       "metadata": [],
+       "query":"what is purpose of yoga?",
+       "response": "Generated answer here"
+     }
+     ```
+
+2. **`/feedback`**
+   - **Method**: POST
+   - **Description**: Allows users to submit feedback and ratings for improving the system.
+   - **Request Body** (JSON):
+     ```json
+     {
+       "rating": 5,
+       "comments": "Your feedback here"
+     }
+     ```
+   - **Response** (JSON):
+     ```json
+     {
+       "message": "Feedback submitted successfully"
+     }
+     ```
+
+---
+
 ## Contributing
 
 - **Rajat Malviya**: [GitHub Profile](https://github.com/rajat-malvi)
 - **Raushan Kumar**: [GitHub Profile](https://github.com/raushan22882917)
----
 
+---
