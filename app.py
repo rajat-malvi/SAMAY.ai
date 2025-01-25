@@ -108,7 +108,7 @@ class EnhancedQASystem:
             Keep it under 2 sentences, welcoming and serene.
             """
 
-        response = self.llm.predict(prompt)
+        response = self.llm.invoke(prompt)
         return {"response": response, "metadata": []}
     
     def contains_inappropriate_content(self, text):
@@ -223,7 +223,7 @@ class EnhancedQASystem:
                     input_variables=["history", "context", "question"]
                 )
 
-                final_response = self.llm.predict(
+                final_response = self.llm.invoke(
                     prompt.format(
                         history=history_context,
                         context=full_context,
@@ -254,7 +254,7 @@ class EnhancedQASystem:
                     input_variables=["context", "question"]
                 )
 
-                final_response = self.llm.predict(
+                final_response = self.llm.invoke(
                     prompt.format(
                         context=full_context,
                         question=query
