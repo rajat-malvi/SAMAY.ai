@@ -17,7 +17,7 @@ import re
 import json
 from datetime import datetime
 from flask_cors import CORS
-
+from UserSession import UserSession
 
 
 app = Flask(__name__)
@@ -26,14 +26,17 @@ CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "
 # Load environment variables
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
+grq_api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
     raise ValueError("Google API key is missing. Ensure `GOOGLE_API_KEY` is set in the environment.")
 
 genai.configure(api_key=api_key)
 
+
 # Initialize feedback storage
 FEEDBACK_FILE = "feedback_data.json"
-
+# Dictionary to store user sessions
+user_sessions = {}
 def save_feedback_to_file(feedback_data):
     try:
         if os.path.exists(FEEDBACK_FILE):
@@ -59,8 +62,8 @@ class EnhancedQASystem:
 
         self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         self.llm = ChatGroq(
-            groq_api_key="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", 
-            model_name="Llama-3.1-70b-Versatile",
+            groq_api_key=grq_api_key,
+            model_name="llama-3.3-70b-versatile",
         )
         self.vector_store = FAISS.load_local(
             faiss_index_path, self.embeddings, allow_dangerous_deserialization=True
@@ -109,7 +112,8 @@ class EnhancedQASystem:
             """
 
         response = self.llm.invoke(prompt)
-        return {"response": response, "metadata": []}
+
+        return {"response": response.content, "metadata": []}
     
     def contains_inappropriate_content(self, text):
         """
@@ -161,8 +165,15 @@ class EnhancedQASystem:
         }
     
 
-    def get_response(self, query: str, k: int = 3) -> dict:
+    def get_response(self, query: str, user_session: UserSession, k: int = 3) -> dict:
         try:
+
+            if user_session.should_clear_history():
+                user_session.clear_history()
+
+            user_session.update_activity()
+
+            
             # Check for inappropriate content or random strings first
             # if self.contains_inappropriate_content(query):
             #     return self.get_inappropriate_content_response()
@@ -186,16 +197,17 @@ class EnhancedQASystem:
             except Exception as e:
                 print(f"Wikipedia retrieval error: {str(e)}")
             
-            try:
-                search_result = self.search_tool.run(query)
-                if search_result:
-                    response_parts.append(f"Web Search Context: {search_result[:500]}...")
-            except Exception as e:
-                print(f"Web search error: {str(e)}")
+            # try:
+            #     search_result = self.search_tool.run(query)
+            #     if search_result:
+            #         response_parts.append(f"Web Search Context: {search_result[:500]}...")
+            # except Exception as e:
+            #     print(f"Web search error: {str(e)}")
 
-            conversation_history = self.memory.load_memory_variables({})
+            conversation_history = user_session.memory.load_memory_variables({})
             history_context = conversation_history.get("history", "")
             full_context = "\n\n".join(response_parts) + "\n\n" + context
+            
 
             # Use appropriate prompt template based on query type
             if self.is_previous(query):
@@ -260,17 +272,18 @@ class EnhancedQASystem:
                         question=query
                     )
                 )
-
+                
+                print('fianll responce ', final_response)
             self.memory.save_context(
                 {"input": query},
-                {"output": final_response}
+                {"output": final_response.content}
             )
             
             if keyword:
                 for doc in metadata:
                     doc['Wiki_search'] = f"https://en.wikipedia.org/wiki/{keyword}"
 
-            return {"response": final_response, "metadata": metadata}
+            return {"response": final_response.content, "metadata": metadata}
                 
         except Exception as e:
             return {"response": f"Error generating response: {str(e)}", "metadata": []}
@@ -282,14 +295,31 @@ try:
 except Exception as e:
     print(f"Error initializing QA System: {str(e)}")
 
+def clean_inactive_sessions():
+    """Remove inactive sessions older than 30 minutes"""
+    current_time = datetime.now()
+    inactive_users = [
+        user_id for user_id, session in user_sessions.items()
+        if (current_time - session.last_activity).total_seconds() / 60 > 30
+    ]
+    for user_id in inactive_users:
+        del user_sessions[user_id]
+
 @app.route('/chat', methods=['POST','GET'])
 def chat():
     try:
         data = request.get_json()
-        # print(data)
+        print(data)
         
         if not data or 'query' not in data:
             return jsonify({"error": "Missing query in request body"}), 400
+        
+        # Get or create user session using user_id or session_id
+        user_id = data.get('user_id', request.remote_addr)  # Fallback to IP address if no user_id
+        
+        if user_id not in user_sessions:
+            user_sessions[user_id] = UserSession(user_id)
+        
         
         query = data['query'].strip()
         
@@ -299,7 +329,7 @@ def chat():
         if not qa_system:
             return jsonify({"error": "QA System not initialized"}), 500
             
-        result = qa_system.get_response(query)
+        result = qa_system.get_response(query, user_sessions[user_id])
         
         return jsonify({
             "query": query,
