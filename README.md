@@ -107,8 +107,3 @@ The SAMAY.ai project also provides a REST API hosted at `https://samay-ai-twgu.o
      ```
 
 ---
-
-## Contributing
-
-- **Rajat Malviya**: [GitHub Profile](https://github.com/rajat-malvi)
----
